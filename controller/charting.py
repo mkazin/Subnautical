@@ -1,11 +1,12 @@
 from copy import copy
+
 import matplotlib as mpl
 # Note: Agg is the Rendering backend needed on repl.it; You may need to use a different one.
-mpl.use('Agg')
-import matplotlib.pyplot as plt
+# mpl.use('Agg')
+# import matplotlib.pyplot as plt
 
-from subnautica.utilities.geometry import geographical_distance, pol2cart # reverse_bearing
-from subnautica.model.map_data import Marker  # , CoordinateType
+from utilities.geometry import geographical_distance, pol2cart # reverse_bearing
+from model.map_data import Marker, MarkerType
 
 
 class Charting(object):
@@ -32,7 +33,7 @@ class Charting(object):
 
         for mark in data:
 
-            if mark['type'] not in Marker.MARKER_TYPES:
+            if mark['type'] not in MarkerType:
                 # print('Skipping ', mark['type']['name']) # , '\n\tNot in: ', MARKER_TYPES)
                 continue
 
@@ -56,9 +57,9 @@ class Charting(object):
         fig.savefig('graph-polar.png')
 
     @staticmethod
-    def get_plot_data(data):
+    def get_plot_data(markers):
         output = []
-        for mark in data.markers:
+        for mark in markers:
             tunnel_distance = mark.distance
             try:
                 surface_distance = geographical_distance(
@@ -69,14 +70,19 @@ class Charting(object):
 
             # Convert polar coordinate information to Cartesean coordinates (x, y)
             x, y = pol2cart(surface_distance, mark.bearing)
-            output_marker = copy(mark.__dict__)
+            marker = { 'x': int(x), 'y': int(y), 'name': mark.name, 'marker_type': mark.marker_type}
+            #
+            # output_marker = mark
+            # print(mark.name)
+            # print(output_marker.name)
+            # # output_marker = copy(mark.__dict__)
             # output_marker.x = x
             # output_marker.y = y
-            output_marker['x'] = x
-            output_marker['y'] = y
-            # output_marker = MarkerEncoder().encode(mark)
-            print(output_marker)
-            output.append(output_marker)
+            # # output_marker['x'] = x
+            # # output_marker['y'] = y
+            # # print(output_marker)
+            # output.append(output_marker)
+            output.append(marker)
         return output
 
     @staticmethod
@@ -95,6 +101,8 @@ class Charting(object):
             for mark in data.markers:
                 if mark.marker_type is not marker_type:
                     continue
+
+                print(f"Charting of {mark.name} because it's a {mark.marker_type}")
 
                 # Convert tunnel distance (3D point-to-point) to surface distance (2D from points at sea level) for projection on a 2D map
                 tunnel_distance = mark.distance

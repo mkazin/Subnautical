@@ -1,5 +1,5 @@
 import unittest
-import subnautica.utilities.geometry as geo
+import utilities as geo
 
 
 class GeometryTestCase(unittest.TestCase):

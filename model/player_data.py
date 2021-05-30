@@ -1,6 +1,6 @@
 from mongoengine import *
 # import datetime
-from .map_data import MapData
+from .map_data import Marker, MapData
 
 # class Page(Document):
 #     title = StringField(max_length=200, required=True)
@@ -9,9 +9,10 @@ from .map_data import MapData
 
 class PlayerData(Document):
 
-    id = ObjectIdField()
+    _id = ObjectIdField()
     name = StringField()
-    map_data = EmbeddedDocumentField(MapData)
+    # map_data = EmbeddedDocumentField(MapData)
+    map_data = ListField(EmbeddedDocumentField(Marker))
     # marker_colors = ListField(EmbeddedDocumentField(???))
 
     # def __init__(self, player_id, map_data, marker_colors=None):
