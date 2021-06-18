@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Map page</title>
-    <script type="application/javascript" src="/static/d3.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+<!--    <script type="application/javascript" src="/static/d3.js"></script>-->
 </head>
 <body>
     <script type="text/javascript">
@@ -13,7 +14,8 @@
         // Note: this is a primitive use of D3. Learn it better and
         // make it look good. See:
         // https://observablehq.com/@xianwu/force-directed-graph-network-graph-with-arrowheads-and-lab -->
-        let min=-1500, max=1500;
+        let min_x=-1500, max_x=1400;
+        let min_y=-1350, max_y=800;
         let height=800, width=800, margin=50;
 
         let svg = d3
@@ -28,11 +30,11 @@
 
         var xScale = d3
               .scaleLinear()
-              .domain([min, max])
+              .domain([min_x, max_x])
               .range([0, xAxisLength]),
             yScale = d3
               .scaleLinear()
-              .domain([max, min])
+              .domain([max_y, min_y])
               .range([0, yAxisLength]);
 
         function renderXAxis() {
@@ -92,8 +94,7 @@
               .attr("fill", d3.rgb("#000000"));
           }
 
-        function renderMarker(x, y, text, color, markerType) {
-
+        function renderMarker(x, y, depth, text, color, markerType) {
             // Initialize a node
             const node = svg //.selectAll(".nodes")
                 //.data(dataset.nodes)
@@ -102,6 +103,8 @@
                 .attr("class", "nodes")
                 .attr("marker-type", markerType)
 
+            let opacity = 1.0 - Math.min(depth / 1000.0, .8);
+
             node.append("circle")
                 .attr("transform", function() {
                     return "translate(" + margin + "," + margin + ")";
@@ -109,6 +112,8 @@
                 .attr("cx", xScale(x))
                 .attr("cy", yScale(y))
                 .attr("fill", d3.rgb(color))
+                .attr("opacity", opacity)
+                .style("stroke", "black") //depth => depth > -1 ? "red" : undefined)
                 .attr("r", 10);
 
             node.append("text")
@@ -132,7 +137,7 @@
 
         {% for marker in markers %}
             markerTypes.add("{{marker.marker_type.name}}");
-            renderMarker({{marker.x}}, {{marker.y}}, "{{marker.name}}", '#FF0000', "{{marker.marker_type.name}}"){% endfor %}
+            renderMarker({{marker.x}}, {{marker.y}}, {{marker.depth}}, "{{marker.name}}", '#FF0000', "{{marker.marker_type}}"){% endfor %}
 
         function titleCase(text) {
             return text.split('_').map(word => {

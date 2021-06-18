@@ -1,4 +1,5 @@
 # import flask_mongoengine.connection
+import json
 from flask import Flask, send_file, request, jsonify, render_template
 from flask_mongoengine import MongoEngine
 
@@ -96,7 +97,6 @@ print(db.config)
 # print(client.list_database_names())
 
 
-
 @app.route('/')
 def hello_world():
     return render_template('index.html')
@@ -133,7 +133,12 @@ def add_marker():
 
 @app.route(rule='/mapdata', methods=['GET'])
 def output_map_data():
-    return generate_map()
+
+    player_data = PlayerData.objects(name='Test Player').first()
+    return jsonify(Charting.get_plot_data(player_data.map_data))
+    # return json.dumps(Charting.get_plot_data(player_data.map_data))
+
+
     # player_data = PlayerData.objects(name='Test Player').first()
     # return render_template('map.html', markers=Charting.get_plot_data(player_data.map_data))
     # return jsonify(Charting.get_plot_data(player_markers))
@@ -151,6 +156,5 @@ def generate_map():
     return render_template('map.html', markers=Charting.get_plot_data(player_data.map_data))
 
 
-
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
