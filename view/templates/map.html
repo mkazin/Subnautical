@@ -5,151 +5,23 @@
     <title>Map page</title>
     <script src="https://d3js.org/d3.v6.min.js"></script>
 <!--    <script type="application/javascript" src="/static/d3.js"></script>-->
+    <script type="application/javascript" src="/static/map.js"></script>
 </head>
 <body>
     <script type="text/javascript">
+        console.log('Entered <body> script')
 
-        let markerTypes = new Set();
+        console.log('Fetching data')
+        fetch('/mapdata')
+        .then(response => response.json())
+        .then(data => renderMap(data));
 
-        // Note: this is a primitive use of D3. Learn it better and
-        // make it look good. See:
-        // https://observablehq.com/@xianwu/force-directed-graph-network-graph-with-arrowheads-and-lab -->
-        let min_x=-1500, max_x=1400;
-        let min_y=-1350, max_y=800;
-        let height=800, width=800, margin=50;
-
-        let svg = d3
-            .select("body")
-            .append("svg")
-            .attr("class", "axis")
-            .attr("width", width)
-            .attr("height", height);
-
-        var yAxisLength = height - 2 * margin,
-            xAxisLength = width - 2 * margin;
-
-        var xScale = d3
-              .scaleLinear()
-              .domain([min_x, max_x])
-              .range([0, xAxisLength]),
-            yScale = d3
-              .scaleLinear()
-              .domain([max_y, min_y])
-              .range([0, yAxisLength]);
-
-        function renderXAxis() {
-            var xAxis = d3
-              .axisBottom()
-              // .ticks(lawfulness.length)
-              // .tickFormat(t => {
-              //   return lawfulness[t];
-              // })
-              .scale(xScale);
-
-            svg
-              .append("g")
-              .attr("class", "x-axis")
-              .attr("transform", function() {
-                return "translate(" + margin + "," + (height - margin) + ")";
-              })
-              .attr("opacity", 1)
-              .call(xAxis);
-
-            d3.selectAll("g.x-axis g.tick")
-              .append("line")
-              .classed("grid-line", true)
-              .attr("x1", 0)
-              .attr("y1", 0)
-              .attr("x2", 0)
-              .attr("y2", -(height - 2 * margin))
-              .attr("opacity", 0.4);
-          }
-
-          function renderYAxis() {
-            var yAxis = d3
-              .axisLeft()
-                <!--
-              // .ticks(goodness.length)
-              // .tickFormat(t => {
-              //   return goodness[t];
-              // })
-              -->
-              .scale(yScale);
-
-            svg
-              .append("g")
-              .attr("class", "y-axis")
-              .attr("transform", function() {
-                return "translate(" + margin + "," + margin + ")";
-              })
-              .call(yAxis);
-
-            d3.selectAll("g.y-axis g.tick")
-              .append("line")
-              .classed("grid-line", true)
-              .attr("x1", 0)
-              .attr("y1", 0)
-              .attr("x2", yAxisLength)
-              .attr("y2", 0)
-              .attr("fill", d3.rgb("#000000"));
-          }
-
-        function renderMarker(x, y, depth, text, color, markerType) {
-            // Initialize a node
-            const node = svg //.selectAll(".nodes")
-                //.data(dataset.nodes)
-                // .enter()
-                .append("g")
-                .attr("class", "nodes")
-                .attr("marker-type", markerType)
-
-            let opacity = 1.0 - Math.min(depth / 1000.0, .8);
-
-            node.append("circle")
-                .attr("transform", function() {
-                    return "translate(" + margin + "," + margin + ")";
-                })
-                .attr("cx", xScale(x))
-                .attr("cy", yScale(y))
-                .attr("fill", d3.rgb(color))
-                .attr("opacity", opacity)
-                .style("stroke", "black") //depth => depth > -1 ? "red" : undefined)
-                .attr("r", 10);
-
-            node.append("text")
-                .attr("transform", function() {
-                    return "translate(" + margin + "," + margin + ")";
-                })
-                .attr("dy", yScale(y) + 4)
-                .attr("dx", xScale(x) + 15)
-                .text(text);
-
-            node.append("title")
-                .text(text);
-        }
-
-        // renderMarker(0, 0, 'origin', '#FF0000')
-        // renderMarker(100, 100, '100 away', '#00FF00')
-        // renderMarker(-100, -100, '-100 away', '#0000FF')
-
-        renderXAxis()
-        renderYAxis()
-
-        {% for marker in markers %}
-            markerTypes.add("{{marker.marker_type.name}}");
-            renderMarker({{marker.x}}, {{marker.y}}, {{marker.depth}}, "{{marker.name}}", '#FF0000', "{{marker.marker_type}}"){% endfor %}
-
-        function titleCase(text) {
-            return text.split('_').map(word => {
-                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-                }).join(' ');
-        }
-
-        // TODO: populate option buttons for each marker type using title-cased text:
-        markerTypes.forEach(mt => { console.log(titleCase(mt))})
     </script>
 
-    <div></div>
+    <div>
+        <div class="map"></div>
+        <div class="legend"></div>
+    </div>
 
 </body>
 </html>
