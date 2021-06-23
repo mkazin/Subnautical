@@ -22,7 +22,6 @@ var xScale = d3
       .range([0, yAxisLength]);
 
 function renderXAxis() {
-    console.log('Entered renderXAxis')
     var xAxis = d3
       .axisBottom()
       // .ticks(lawfulness.length)
@@ -53,7 +52,6 @@ function renderXAxis() {
   }
 
 function renderYAxis() {
-    console.log('Entered renderYAxis')
     var yAxis = d3
       .axisLeft()
         <!--
@@ -83,8 +81,6 @@ function renderYAxis() {
   }
 
 function renderMarker(x, y, depth, text, color, markerType) {
-    console.log('Entered renderMarker')
-    // Initialize a node
     const node = svg //.selectAll(".nodes")
         //.data(dataset.nodes)
         // .enter()
@@ -117,64 +113,64 @@ function renderMarker(x, y, depth, text, color, markerType) {
         .text(text);
 }
 
-// renderMarker(0, 0, 'origin', '#FF0000')
-// renderMarker(100, 100, '100 away', '#00FF00')
-// renderMarker(-100, -100, '-100 away', '#0000FF')
-
-
 function titleCase(text) {
     return text.split('_').map(word => {
             return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
         }).join(' ');
 }
 
-// TODO: populate option buttons for each marker type using title-cased text:
 function renderLegend() {
-    console.log('Entered renderLegend')
-    markerTypes.forEach(mt => { console.log(titleCase(mt.split('.')[1]))})
+    Array.from(markerTypes).sort().forEach(type_enum => {
+        addLegendItem(type_enum)
+    })
 
-    let legendDiv = document.querySelector('.legend');
+    document.querySelector(".legend-clear-all").addEventListener("click", function() {legendSetAll(false)})
+    document.querySelector(".legend-check-all").addEventListener("click", function() {legendSetAll(true)})
+}
 
-    markerTypes.forEach(type_enum => {
-//        let type_enum = item.split('.')[1]
-        let type_name = titleCase(type_enum)
-        console.log(type_name)
+function addLegendItem(type_enum) {
+    let legendDiv = document.querySelector('.legend')
+    let markerTypeDiv = document.createElement('div')
+    legendDiv.appendChild(markerTypeDiv)
 
-        let markerTypeDiv = document.createElement('div')
-        legendDiv.appendChild(markerTypeDiv)
+    addLegendItemCheckbox(type_enum, markerTypeDiv)
+    addLegendItemLabel(type_enum, markerTypeDiv)
+}
 
-        var checkbox = document.createElement('input')
-        checkbox.setAttribute("type", "checkbox")
-        checkbox.setAttribute("value", type_enum)
-        checkbox.checked = true;
-        markerTypeDiv.appendChild(checkbox)
-        checkbox.addEventListener('click', checkboxClickListener)
+function addLegendItemCheckbox(type_enum, markerTypeDiv) {
+    var checkbox = document.createElement('input')
+    checkbox.setAttribute("type", "checkbox")
+    checkbox.setAttribute("value", type_enum)
+    checkbox.checked = true;
+    markerTypeDiv.appendChild(checkbox)
+    checkbox.addEventListener('click', checkboxClickListener)
+}
 
-        var label = document.createElement('label')
-        label.setAttribute("for", type_enum)
-        label.textContent  = type_name
-        markerTypeDiv.appendChild(label)
-
-    });
+function addLegendItemLabel(type_enum, markerTypeDiv) {
+    var label = document.createElement('label')
+    label.setAttribute("for", type_enum)
+    label.textContent  = titleCase(type_enum.split('.')[1])
+    markerTypeDiv.appendChild(label)
 }
 function checkboxClickListener(e) {
     var checkbox = e.target
-    console.log('Need to ' + (checkbox.checked ? 'show': 'hide') + ' the ' + checkbox.value + ' markers')
-    d3.selectAll(".nodes[marker-type='" + checkbox.value + "']").style("opacity", (checkbox.checked ? 1 : 0))
+    d3.selectAll(".nodes[marker-type='" + checkbox.value + "']")
+        .style("opacity", (checkbox.checked ? 1 : 0))
+}
 
-//    if (checkbox.checked) {
-//        console.log('Need to show the ' + checkbox.value + ' markers')
-//    } else {
-//    }
+function legendSetAll(checked) {
+    document.querySelectorAll("input[type=checkbox]").forEach(checkbox => {
+        if (checkbox.checked !== checked) {
+            checkbox.click()
+        }
+    })
 }
 
 function renderAllMarkers(mapData) {
-
     mapData.forEach(marker => {
-        markerTypes.add(marker.marker_type) // .split('.')[1].capitalize()
+        markerTypes.add(marker.marker_type)
         renderMarker(marker.x, marker.y, marker.depth, marker.name, "#FF0000", marker.marker_type);
     });
-
 }
 
 function clearAllMarkers() {
@@ -184,7 +180,6 @@ function clearAllMarkers() {
 }
 
 function renderMap(mapData) {
-    console.log('Entered renderMap')
     svg = d3
         .select(".map")
         .append("svg")
@@ -192,9 +187,11 @@ function renderMap(mapData) {
         .attr("width", width)
         .attr("height", height);
 
-    console.log('Rendering map components')
-
     Promise.all([renderXAxis(), renderYAxis()])
     Promise.resolve(renderAllMarkers(mapData))
     renderLegend()
 }
+
+document.querySelector(".add-bearing").addEventListener(function () {
+
+});

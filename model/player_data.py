@@ -14,9 +14,3 @@ class PlayerData(Document):
     # map_data = EmbeddedDocumentField(MapData)
     map_data = ListField(EmbeddedDocumentField(Marker))
     # marker_colors = ListField(EmbeddedDocumentField(???))
-
-    # def __init__(self, player_id, map_data, marker_colors=None):
-    #     self.player_id = player_id
-    #     self.map_data = map_data
-    #     # self.marker_colors = marker_colors
-

@@ -2,25 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Map page</title>
+    <title>Subnautical Chart</title>
     <script src="https://d3js.org/d3.v6.min.js"></script>
 <!--    <script type="application/javascript" src="/static/d3.js"></script>-->
     <script type="application/javascript" src="/static/map.js"></script>
+    <link rel="stylesheet" href="/static/map.css">
+    <link rel="shortcut icon" href="/static/favicon.ico">
 </head>
 <body>
     <script type="text/javascript">
-        console.log('Entered <body> script')
-
-        console.log('Fetching data')
         fetch('/mapdata')
         .then(response => response.json())
         .then(data => renderMap(data));
-
     </script>
-
-    <div>
+    <div class="outer">
         <div class="map"></div>
-        <div class="legend"></div>
+        <div class="sidebar>
+            <div class="sidebar-contents">
+                <div class="legend">
+                    <input type="button" class="legend-clear-all" value="Hide All"/>
+                    <input type="button" class="legend-check-all" value="Show All"/>
+                </div>
+                <div class="controls">
+                    <form class="new-bearing-form" action="/marker" method="post">
+                        Name: <input type="text" class="new-bearing-name" name="name"/><br/>
+
+                        <div class="tooltip">Distance<span class="tooltiptext">Distance - the HUD distance shown to your lifepod (for all you math nerds: don't worry about your depth- that'll get calculated for you!)</span></div>
+                        <input type="number" name="distance"/><br/>
+
+                        <div class="tooltip">Heading<span class="tooltiptext">Heading - the compass value while pointed at your lifepod</span></div>
+                        <input type="number" name="heading"/><br/>
+
+                        <div class="tooltip">Depth<span class="tooltiptext">Your current depth meter. Use 0 if above sea level.</span></div>
+                        <input type="number" name="depth"/><br/>
+
+                        <!-- MarkerType -->
+                        <!-- <input type="number" name="marker_type"/><br/> -->
+
+                        <input type="submit" value="Add New Bearing"/>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
 </body>

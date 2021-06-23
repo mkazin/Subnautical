@@ -1,17 +1,18 @@
+import configparser
 import os
 
-user = 'subnautical'
-password = 'Eet2nTMBjlEB0Qev'
-database = 'Subnautical'
+config = configparser.RawConfigParser()
+config.read('config/subnautical.conf')
+
+user = config.get('DB', 'user')
+password = config.get('DB', 'password')
+database = config.get('DB', 'database')
+hostname = config.get('DB', 'hostname')
 
 config = {
-    # 'db': database,
-    'host': f"mongodb+srv://{user}:{password}@cluster0.xg0kc.mongodb.net/{database}",
-    # 'host': 'mongodb+srv://cluster0.xg0kc.mongodb.net',
+    'host': f"mongodb+srv://{user}:{password}@{hostname}/{database}?retryWrites=true&w=majority",
     # 'port': 12345
 }
-#    f'mongodb+srv://{username}:{password}@cluster0.xg0kc.mongodb.net/{database}?retryWrites=true&w=majority')
-
 app_config = {
     'ROOT_PATH': os.path.dirname(os.path.abspath(__file__))
 }
