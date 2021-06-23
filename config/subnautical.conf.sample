@@ -1,0 +1,12 @@
+; Copy this file to "subnautical.conf" and set your own values there.
+
+[DB]
+; e.g. cluster0.ABCDE.mongodb.net if using Atlas
+hostname=
+
+; DB name
+database=Subnautical
+
+; User/password with write access to your database
+user=subnautical
+password=

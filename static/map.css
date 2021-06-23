@@ -1,0 +1,60 @@
+body {
+    background-color: #064273;
+}
+
+.outer {
+    column-count: 2;
+    display: flex;
+}
+
+.map {
+    flex: 3;
+    background-color: #7fcdff;
+}
+
+.sidebar {
+    flex: 1;
+    border: 2px solid #1da2d8;
+    margin-right: 20px;
+}
+
+.sidebar-contents {
+    display: flex;
+    flex-flow: row;
+    column-count: 1;
+}
+
+.legend {
+    background-color: #76b6c4;
+    border: 1px solid #1da2d8;
+}
+
+.controls {
+    background-color: #76b6c4;
+    border: 1px solid #1da2d8;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+

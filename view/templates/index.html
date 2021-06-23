@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subnautical Chart</title>
+</head>
+<body>
+    <div id="content">
+    </div>
+
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- TODO: Switch to the production build when deploying publicly -->
+<!--    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>-->
+<!--    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>-->
+<!--    <script type="text/jsx">-->
+    <script type="application/javascript">
+
+
+        /*** @jsx React.DOM */
+
+        var realPython = React.createClass({
+            render: function() {
+              return ("<h2>Greetings, from Real Python!</h2>");
+            }
+        });
+
+        ReactDOM.render(
+            React.createElement(realPython, null),
+            document.getElementById('content')
+        );
+
+    </script>
+
+    <h3>Hello World 3</h3>
+</body>
+</html>
