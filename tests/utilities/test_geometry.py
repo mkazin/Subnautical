@@ -1,5 +1,5 @@
 import unittest
-import utilities as geo
+from utilities import geometry as geo
 
 
 class GeometryTestCase(unittest.TestCase):

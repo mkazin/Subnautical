@@ -61,23 +61,3 @@ class Marker(EmbeddedDocument):
 #     MARKER_OTHER,
 #     MARKER_ZONE,
 # ]
-
-    # def __init__(self, bearing, distance, depth, name, marker_type=None):
-    #     self.bearing = bearing
-    #     self.distance = distance
-    #     self.depth = depth
-    #     self.name = name
-    #     self.marker_type = marker_type if marker_type else Marker.MARKER_OTHER
-    #     # self.x = None
-    #     # self.y = None
-
-
-class MapData(EmbeddedDocument):
-
-    markers = ListField(EmbeddedDocumentField(Marker))
-    # def __init__(self):
-    #     self.markers = []
-
-    def add(self, marker):
-        self.markers.append(marker)
-
