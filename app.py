@@ -8,7 +8,7 @@ from flask_mongoengine import MongoEngine
 # from flask_pymongo import PyMongo
 import certifi
 
-import subnautical
+from config import config
 from model.map_data import MapData, Marker, MarkerType
 from model.player_data import PlayerData
 from controller.charting import Charting
@@ -25,10 +25,10 @@ def init_database():
 
 app = Flask(__name__)
 
-app.static_folder = subnautical.app_config['ROOT_PATH'] + '/static'
-app.template_folder = subnautical.app_config['ROOT_PATH'].split('controller')[0] + '/view/templates'
-app.config.from_object('subnautical.config')
-app.config['MONGODB_SETTINGS'] = subnautical.mongo
+app.static_folder = config.app_config['ROOT_PATH'] + '/static'
+app.template_folder = config.app_config['ROOT_PATH'].split('controller')[0] + '/view/templates'
+app.config.from_object('config.config')
+app.config['MONGODB_SETTINGS'] = config.mongo
 app.config['MONGODB_SETTINGS']['connectTimeoutMS'] = 200
 app.config['MONGODB_SETTINGS']['tlsCAFile'] = certifi.where()
 db = MongoEngine(app, app.config)
@@ -88,5 +88,5 @@ def generate_map():
 
 
 if __name__ == '__main__':
-    app.run(host=subnautical.server['host'], port=subnautical.server['port'], debug=False)
+    app.run(host=config.server['host'], port=config.server['port'], debug=False)
 
