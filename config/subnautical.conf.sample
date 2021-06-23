@@ -10,3 +10,7 @@ database=Subnautical
 ; User/password with write access to your database
 user=subnautical
 password=
+
+[Server]
+port=5000
+host=localhost

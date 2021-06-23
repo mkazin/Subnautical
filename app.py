@@ -27,21 +27,16 @@ app = Flask(__name__)
 
 app.static_folder = subnautical.app_config['ROOT_PATH'] + '/static'
 app.template_folder = subnautical.app_config['ROOT_PATH'].split('controller')[0] + '/view/templates'
-print(app.template_folder)
-print(subnautical.config)
 app.config.from_object('subnautical.config')
-app.config['MONGODB_SETTINGS'] = subnautical.config
+app.config['MONGODB_SETTINGS'] = subnautical.mongo
 app.config['MONGODB_SETTINGS']['connectTimeoutMS'] = 200
 app.config['MONGODB_SETTINGS']['tlsCAFile'] = certifi.where()
-print(app.config)
 db = MongoEngine(app, app.config)
-print(db.config)
 
 
 @app.route('/')
 def hello_world():
     return render_template('index.html')
-    # return 'Hello World 2!'
 
 
 @app.route('/register')
@@ -93,5 +88,5 @@ def generate_map():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host=subnautical.server['host'], port=subnautical.server['port'], debug=False)
 
