@@ -1,13 +1,19 @@
 import configparser
 import os
 
-config = configparser.RawConfigParser()
-config.read('config/subnautical.conf')
+parser = configparser.RawConfigParser()
+parser.read('config/subnautical.conf')
 
-user = config.get('DB', 'user')
-password = config.get('DB', 'password')
-database = config.get('DB', 'database')
-hostname = config.get('DB', 'hostname')
+user = parser.get('DB', 'user')
+password = parser.get('DB', 'password')
+database = parser.get('DB', 'database')
+hostname = parser.get('DB', 'hostname')
+
+GOOGLE_CLIENT_ID = parser.get('OAUTH', "GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = parser.get('OAUTH', "GOOGLE_CLIENT_SECRET")
+GOOGLE_DISCOVERY_URL = (
+    "https://accounts.google.com/.well-known/openid-configuration"
+)
 
 config = {
     'host': f"mongodb+srv://{user}:{password}@{hostname}/{database}?retryWrites=true&w=majority",

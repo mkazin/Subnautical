@@ -1,5 +1,6 @@
-# Subnautical configuration file
+# SubnauticalChart configuration
 config/subnautical.conf
+config/client_secrets.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
