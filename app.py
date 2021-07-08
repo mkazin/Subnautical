@@ -26,6 +26,8 @@ def init_map_data():
 
 
 app = Flask(__name__)
+app.config['SERVER_NAME'] = f"{subnautical.app_domain}:{subnautical.app_port}"
+app.config['SESSION_COOKIE_DOMAIN'] = subnautical.app_domain
 
 app.static_folder = subnautical.app_config['ROOT_PATH'] + '/static'
 app.template_folder = subnautical.app_config['ROOT_PATH'].split('controller')[0] + '/view/templates'
@@ -33,17 +35,12 @@ app.config.from_object('subnautical.config')
 app.config['MONGODB_SETTINGS'] = subnautical.config
 app.config['MONGODB_SETTINGS']['connectTimeoutMS'] = 200
 app.config['MONGODB_SETTINGS']['tlsCAFile'] = certifi.where()
+
 db = MongoEngine(app, app.config)
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "config", "client_secrets.json")
-flow = Flow.from_client_secrets_file(
-    client_secrets_file=client_secrets_file,
-    scopes=["https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email",
-            "openid"],
-    redirect_uri='http://127.0.0.1:5000/callback',
-    )
+
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -59,6 +56,8 @@ def hello_world():
         return render_template('index.html')
     else:
         print('User not logged in. Redirecting to /login')
+        logout_user()
+        session.clear()
         return redirect('/login')  # render_template('login.html')
 
 
@@ -185,5 +184,17 @@ def load_player_from_db(player_id):
     return player
 
 
+with app.app_context():
+    flow = Flow.from_client_secrets_file(
+        client_secrets_file=client_secrets_file,
+        scopes=["https://www.googleapis.com/auth/userinfo.profile",
+                "https://www.googleapis.com/auth/userinfo.email",
+                "openid"],
+        redirect_uri=url_for('callback'),
+        )
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    print(f"Starting app on host={subnautical.app_host}, port={subnautical.app_port}")
+    app.run(host=subnautical.app_host, port=subnautical.app_port, debug=False)
+

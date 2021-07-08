@@ -9,6 +9,10 @@ password = parser.get('DB', 'password')
 database = parser.get('DB', 'database')
 hostname = parser.get('DB', 'hostname')
 
+app_host = parser.get('Server', 'host')
+app_port = parser.get('Server', 'port')
+app_domain = parser.get('Server', 'domain')
+
 GOOGLE_CLIENT_ID = parser.get('OAUTH', "GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = parser.get('OAUTH', "GOOGLE_CLIENT_SECRET")
 GOOGLE_DISCOVERY_URL = (

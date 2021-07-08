@@ -10,3 +10,14 @@ database=Subnautical
 ; User/password with write access to your database
 user=subnautical
 password=
+
+
+[Server]
+host=localhost
+port=5000
+domain=example.com
+
+[OAUTH]
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
