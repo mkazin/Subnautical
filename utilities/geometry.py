@@ -21,7 +21,7 @@ def geographical_distance(tunnel_distance, depth):
       Since our map is 2D, we need to account for depth, which would otherwise make
       items appear farther away on the map than they actually are.
     """
-    return int(np.sqrt((tunnel_distance * tunnel_distance) - (depth * depth)))
+    return int(np.sqrt(np.abs((tunnel_distance * tunnel_distance) - (depth * depth))))
 
 
 def pol2cart(r, bearing):

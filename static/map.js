@@ -88,7 +88,7 @@ function renderMarker(x, y, depth, text, color, markerType) {
         .attr("class", "nodes")
         .attr("marker-type", markerType)
 
-    let opacity = 1.0 - Math.min(depth / 1000.0, .8);
+    let opacity = 1.0 - Math.min(-depth / 1000.0, .8);
 
     node.append("circle")
         .attr("transform", function() {
