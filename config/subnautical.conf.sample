@@ -12,11 +12,11 @@ user=subnautical
 password=
 
 [Server]
-; Host and port on which to listen to traffic. Use 0.0.0.0 for local testing
+; Host and port on which to listen to traffic. Use 127.0.0.1 for local testing
 host=0.0.0.0
 port=5000
 
-; Domain name clients use to access this service.
+; Domain name clients (browsers) use to access this service.
 ; Use 127.0.0.1 for local testing and point browser to http://127.0.0.1:port
 domain=127.0.0.1
 
