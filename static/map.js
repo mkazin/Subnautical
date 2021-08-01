@@ -181,7 +181,7 @@ function clearAllMarkers() {
 
 function renderMap(mapData) {
     svg = d3
-        .select(".map")
+        .select(".plot")
         .append("svg")
         .attr("class", "axis")
         .attr("width", width)

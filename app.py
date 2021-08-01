@@ -51,9 +51,8 @@ client = WebApplicationClient(subnautical.GOOGLE_CLIENT_ID)
 
 @app.route('/')
 def hello_world():
-    print('current_user: ', current_user)
     if current_user.is_authenticated and not current_user.is_anonymous:
-        return render_template('index.html')
+        return render_template('map.html')
     else:
         print('User not logged in. Redirecting to /login')
         logout_user()

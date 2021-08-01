@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Subnautical Chart</title>
+    <title>Subnautical</title>
     <script src="https://d3js.org/d3.v6.min.js"></script>
 <!--    <script type="application/javascript" src="/static/d3.js"></script>-->
     <script type="application/javascript" src="/static/map.js"></script>
@@ -10,13 +10,10 @@
     <link rel="shortcut icon" href="/static/favicon.ico">
 </head>
 <body>
-    <script type="text/javascript">
-        fetch('/mapdata')
-        .then(response => response.json())
-        .then(data => renderMap(data));
-    </script>
-    <div class="outer">
-        <div class="map"></div>
+    {% extends "layout.html" %}
+    {% block content %}
+    <div class="map_block">
+        <div class="plot"></div>
         <div class="sidebar>
             <div class="sidebar-contents">
                 <div class="legend">
@@ -45,6 +42,13 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        fetch('/mapdata')
+        .then(response => response.json())
+        .then(data => renderMap(data));
+    </script>
+    {% endblock %}
+
 
 </body>
 </html>

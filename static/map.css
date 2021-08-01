@@ -1,13 +1,14 @@
 body {
+
+}
+
+.map_block {
+    column-count: 2;
+    display: flex;
     background-color: #064273;
 }
 
-.outer {
-    column-count: 2;
-    display: flex;
-}
-
-.map {
+.plot {
     flex: 3;
     background-color: #7fcdff;
 }
