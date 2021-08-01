@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/static/layout.css">
+    <title>Title</title>
+</head>
+
+<body>
+  <header>
+    <div class="header_container">
+      <h1 class="logo">SubnauticalMap</h1>
+      <strong><nav>
+        <ul class="menu">
+          <li><a href="{{ url_for('generate_map') }}">Map</a></li>
+          <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+        </ul>
+      </nav></strong>
+      <div class="user_container">
+        <img class="profile_image" src="{{ current_user.profile_pic }}">
+        <a href="{{ url_for('logout') }}">Log Out</a>
+      </div>
+    </div>
+  </header>
+  <hr/>
+  <div class="content_container">
+  {% block content %}
+  {% endblock %}
+  </div>
+  </body>
+</html>

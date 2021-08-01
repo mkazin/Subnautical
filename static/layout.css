@@ -1,0 +1,17 @@
+.header_container {
+    column-count: 2;
+    display: flex;
+}
+
+.user_container {
+}
+
+#.menu {
+#    column-count: 2;
+#    display: flex;
+#}
+
+.profile_image {
+    width: 32px;
+    height: 32px;
+}

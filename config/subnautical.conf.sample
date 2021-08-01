@@ -1,7 +1,7 @@
 ; Copy this file to "subnautical.conf" and set your own values there.
 
 [DB]
-; e.g. cluster0.ABCDE.mongodb.net if using Atlas
+; DB hostname, e.g. cluster0.ABCDE.mongodb.net if using Atlas
 hostname=
 
 ; DB name
@@ -11,13 +11,15 @@ database=Subnautical
 user=subnautical
 password=
 
-
 [Server]
-host=localhost
+; Host and port on which to listen to traffic. Use 0.0.0.0 for local testing
+host=0.0.0.0
 port=5000
-domain=example.com
+
+; Domain name clients use to access this service.
+; Use 127.0.0.1 for local testing and point browser to http://127.0.0.1:port
+domain=127.0.0.1
 
 [OAUTH]
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
-
