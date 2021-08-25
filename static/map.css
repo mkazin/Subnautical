@@ -20,19 +20,22 @@ body {
 }
 
 .sidebar-contents {
-    display: flex;
-    flex-flow: row;
-    column-count: 1;
+}
+
+.depth-filter #value-range {
+    style: "display: hidden";
 }
 
 .legend {
     background-color: #76b6c4;
-    border: 1px solid #1da2d8;
+    border: 3px solid #1da2d8;
+    margin: 5px
 }
 
 .controls {
     background-color: #76b6c4;
-    border: 1px solid #1da2d8;
+    border: 3px solid #1da2d8;
+    margin: 5px
 }
 
 .tooltip {
