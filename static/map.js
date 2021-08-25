@@ -8,6 +8,12 @@ let svg;
 let min_x=-1500, max_x=1400;
 let min_y=-1350, max_y=800;
 let height=800, width=800, margin=50;
+let DEPTH_FILTER_MIN = 0
+let DEPTH_FILTER_MAX = 2000
+
+var allMarkers = []
+var min_depth = DEPTH_FILTER_MIN
+var max_depth = DEPTH_FILTER_MAX
 
 var yAxisLength = height - 2 * margin,
     xAxisLength = width - 2 * margin;
@@ -80,23 +86,43 @@ function renderYAxis() {
       .attr("fill", d3.rgb("#000000"));
   }
 
-function renderMarker(x, y, depth, text, color, markerType) {
+function isMarkerTypeEnabled(markerType) {
+    return markerTypeCheckbox = document.querySelector("input[value='" + markerType + "']").checked;
+}
+
+function doesMarkerPassDepthFilter(marker) {
+    return marker.depth <= max_depth && marker.depth >= min_depth
+}
+
+function renderMarker(marker) { //, index, selection) {
+
+//    if (! isMarkerTypeEnabled(marker.marker_type)) {
+//        console.log("Skipping marker: " + marker.name)
+//        return
+//    }
+
+    console.log("Rendering marker: " + marker.name)
+//    const node = selection[0]
+//    node.setAttribute("marker-type", marker.marker_type)
+
+//    const node = selection.attr("marker-type", marker.markerType)
+
     const node = svg //.selectAll(".nodes")
         //.data(dataset.nodes)
         // .enter()
         .append("g")
         .attr("class", "nodes")
-        .attr("marker-type", markerType)
+        .attr("marker-type", marker.marker_type)
 
-    let opacity = 1.0 - Math.min(-depth / 1000.0, .8);
+    let opacity = 1.0 - Math.min(-marker.depth / 1000.0, .8);
 
     node.append("circle")
         .attr("transform", function() {
             return "translate(" + margin + "," + margin + ")";
         })
-        .attr("cx", xScale(x))
-        .attr("cy", yScale(y))
-        .attr("fill", d3.rgb(color))
+        .attr("cx", xScale(marker.x))
+        .attr("cy", yScale(marker.y))
+        .attr("fill", d3.rgb("#FF0000"))  // TODO: use marker-specific color instead
         .attr("opacity", opacity)
         .style("stroke", "black") //depth => depth > -1 ? "red" : undefined)
         .attr("r", 10);
@@ -105,12 +131,15 @@ function renderMarker(x, y, depth, text, color, markerType) {
         .attr("transform", function() {
             return "translate(" + margin + "," + margin + ")";
         })
-        .attr("dy", yScale(y) + 4)
-        .attr("dx", xScale(x) + 15)
-        .text(text);
+        .attr("dy", yScale(marker.y) + 4)
+        .attr("dx", xScale(marker.x) + 15)
+        .text(marker.name);
 
     node.append("title")
-        .text(text);
+        .text(marker.name);
+
+//    return node
+
 }
 
 function titleCase(text) {
@@ -126,6 +155,7 @@ function renderLegend() {
 
     document.querySelector(".legend-clear-all").addEventListener("click", function() {legendSetAll(false)})
     document.querySelector(".legend-check-all").addEventListener("click", function() {legendSetAll(true)})
+    return true
 }
 
 function addLegendItem(type_enum) {
@@ -164,19 +194,53 @@ function legendSetAll(checked) {
             checkbox.click()
         }
     })
+    renderMarkers()
 }
 
-function renderAllMarkers(mapData) {
-    mapData.forEach(marker => {
+function buildMarkerTypesSet(markers) {
+    markers.forEach(marker => {
         markerTypes.add(marker.marker_type)
-        renderMarker(marker.x, marker.y, marker.depth, marker.name, "#FF0000", marker.marker_type);
-    });
+    })
+    return true
+}
+
+function renderMarkers() {
+
+    allMarkers.forEach(marker => {
+        if (doesMarkerPassDepthFilter(marker) &&
+            isMarkerTypeEnabled(marker.marker_type)) {
+            renderMarker(marker)
+        }
+    })
+
+//    svg.selectAll('.nodes')
+//        .data(markers)
+//        .enter()
+//            .append("g")
+//            .attr("class", "nodes")
+//        .enter().append(function(marker) { return renderMarker(marker) })
+////            .each(renderMarker)
+
 }
 
 function clearAllMarkers() {
     document.querySelectorAll('.nodes').forEach(node => {
         document.querySelector('.axis').removeChild(node)
         });
+}
+
+function populateMarkerTypeDropdowns() {
+    document.querySelectorAll('.marker-type-dropdown').forEach(dropdown => {
+        while (dropdown.options.length > 0) {
+            dropdown.remove(dropdown.options.length-1)
+        }
+        Array.from(markerTypes).forEach(type_enum => {
+            var option = document.createElement('option')
+            option.setAttribute('value', type_enum)
+            option.textContent  = titleCase(type_enum.split('.')[1])
+            dropdown.appendChild(option)
+        })
+    })
 }
 
 function renderMap(mapData) {
@@ -187,11 +251,60 @@ function renderMap(mapData) {
         .attr("width", width)
         .attr("height", height);
 
-    Promise.all([renderXAxis(), renderYAxis()])
-    Promise.resolve(renderAllMarkers(mapData))
-    renderLegend()
+    allMarkers = mapData
+
+    Promise.all([renderXAxis(), renderYAxis(), buildMarkerTypesSet(allMarkers)])
+    Promise.resolve(renderLegend())
+    Promise.resolve(renderMarkers())
+    populateMarkerTypeDropdowns()
 }
 
-document.querySelector(".add-bearing").addEventListener(function () {
+function onDepthFilterChanged(range) {
+    [min_depth, max_depth] = range
 
-});
+    // TODO: might need to use a Transition here:
+    // see https://www.oreilly.com/library/view/d3-for-the/9781492046783/ch04.html
+
+    clearAllMarkers()
+    renderMarkers()
+
+    d3.select('p#value-range').text(range.map(d3.format(',d')).join('-'));
+}
+
+
+function initializeDepthSlider() {
+
+    // Range slider
+/*
+    <p id="value-range"></p>
+    <div id="slider-range"></div>
+*/
+    var sliderRange = d3
+        .sliderBottom()
+        .min(0)
+        .max(2000)  // d3.max(data))
+        .width(300)
+        .tickFormat(d3.format(',d'))
+        .ticks(5)
+        .default([0, 2000])
+        .fill('#2196f3')
+        .on('onchange', val => { onDepthFilterChanged(val) });
+
+    var gRange = d3
+        .select('div#slider-range')
+        .append('svg')
+        .attr('width', 500)
+        .attr('height', 100)
+        .append('g')
+        .attr('transform', 'translate(30,30)');
+
+    gRange.call(sliderRange);
+
+    d3.select('p#value-range').text(
+        sliderRange
+            .value()
+            .map(d3.format(',d'))
+            .join('-')
+        );
+
+}

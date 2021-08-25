@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Subnautical</title>
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-<!--    <script type="application/javascript" src="/static/d3.js"></script>-->
+    <script type="application/javascript" src="/static/d3.v6.min.js"></script>
+    <script type="application/javascript" src="/static/d3-simple-slider.min.js"></script>
     <script type="application/javascript" src="/static/map.js"></script>
     <link rel="stylesheet" href="/static/map.css">
     <link rel="shortcut icon" href="/static/favicon.ico">
@@ -14,13 +14,25 @@
     {% block content %}
     <div class="map_block">
         <div class="plot"></div>
-        <div class="sidebar>
+        <div class="sidebar">
             <div class="sidebar-contents">
                 <div class="legend">
+                    <h4>Show/Hide Marker Types:</h4>
                     <input type="button" class="legend-clear-all" value="Hide All"/>
                     <input type="button" class="legend-check-all" value="Show All"/>
+                    <input type="button" class="legend-add-type" value="New Type"/>
+                </div>
+                <div class="depth-filter">
+                    Depth filter:
+<!--                    <p id="depth-value"></p>-->
+<!--                    <div id="depth-slider"></div>-->
+
+                    <p id="value-range"></p>
+                    <div id="slider-range"></div>
+
                 </div>
                 <div class="controls">
+                    <h4>Add new marker:</h4>
                     <form class="new-bearing-form" action="/marker" method="post">
                         Name: <input type="text" class="new-bearing-name" name="name"/><br/>
 
@@ -46,6 +58,7 @@
         fetch('/mapdata')
         .then(response => response.json())
         .then(data => renderMap(data));
+        initializeDepthSlider();
     </script>
     {% endblock %}
 
