@@ -20,44 +20,20 @@ class Marker(EmbeddedDocument):
     distance = IntField()
     depth = IntField()
     name = StringField()
-    marker_type = EnumField(MarkerType)
+    marker_type = EnumField(MarkerType, required=False)
+
+    marker_type_name = StringField(required=False, db_field="type")
+    color = StringField(required=False)
+
     x = IntField()
     y = IntField()
-    # DecimalField(min_value=-2000.00, max_value=2000.0, force_string=False, precision=2, rounding='ROUND_HALF_UP')
 
 
-# class MarkerType(EmbeddedDocument):
-#     name = StringField()
-#     color = StringField()
-#     size = IntField()
+#
+# class MapData(Document):
+#     player_id = StringField(required=True, primary_key=True)
+#     markers = EmbeddedDocumentListField(Marker, required=False, default=None)
+#     map_data = EmbeddedDocumentListField(Marker, required=False, default=None)
+#
 
 
-# MARKER_LIFEPOD = {'name': 'Lifepod', 'color': '#907F00', 'polarcolor': 35, 'size': 120}
-# MARKER_WRECK = {'name': 'Wreck', 'color': '#BBBBBB', 'polarcolor': 190, 'size': 90}
-# MARKER_THERMAL = {'name': 'Thermal Vent', 'color': '#B83030', 'polarcolor': 55, 'size': 120}
-# MARKER_HABITAT = {'name': 'Habitat', 'color': '#00FF00', 'polarcolor': 290, 'size': 150}
-# MARKER_REAPER = {'name': 'REAPER', 'color': '#FF0000', 'polarcolor': 0, 'size': 120}
-# MARKER_AURORA = {'name': 'Aurora', 'color': '#3030FF', 'polarcolor': 150, 'size': 180}
-# MARKER_ALTERA = {'name': 'Altera', 'color': '#3030FF', 'polarcolor': 150, 'size': 180}
-# MARKER_EXPLORE = {'name': 'Explore', 'color': '#000000', 'polarcolor': 0, 'size': 200}
-# MARKER_RESOURCE = {'name': 'Resource', 'color': '#CCCC00', 'polarcolor': 0, 'size': 250}
-# MARKER_ZONE = {'name': 'Zone Marker', 'color': '#00007F', 'polarcolor': 0, 'size': 250}
-# MARKER_PEEP = {'name': 'Peep Vent', 'color': '#330033', 'polarcolor': 0, 'size': 250}
-# MARKER_ARCH = {'name': 'Alien Arch', 'color': '#7FFF7F', 'polarcolor': 0, 'size': 250}
-# MARKER_OTHER = {'name': 'Other', 'color': '#2F7FFF', 'polarcolor': 0, 'size': 250}
-
-# MARKER_TYPES = [
-#     MARKER_LIFEPOD,
-#     MARKER_WRECK,
-#     # MARKER_THERMAL,
-#     MARKER_HABITAT,
-#     MARKER_REAPER,
-#     # MARKER_AURORA,
-#     MARKER_ALTERA,
-#     # MARKER_RESOURCE,
-#     # MARKER_EXPLORE,
-#     # MARKER_PEEP,
-#     # MARKER_ARCH,
-#     MARKER_OTHER,
-#     MARKER_ZONE,
-# ]

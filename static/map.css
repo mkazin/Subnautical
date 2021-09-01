@@ -23,7 +23,7 @@ body {
 }
 
 .depth-filter #value-range {
-    style: "display: hidden";
+    visibility: hidden
 }
 
 .legend {
@@ -62,3 +62,6 @@ body {
   visibility: visible;
 }
 
+.new-bearing-form .tooltip {
+    width: 15%;
+}

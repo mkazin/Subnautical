@@ -149,8 +149,8 @@ function titleCase(text) {
 }
 
 function renderLegend() {
-    Array.from(markerTypes).sort().forEach(type_enum => {
-        addLegendItem(type_enum)
+    Array.from(markerTypes).sort().forEach(marker_type => {
+        addLegendItem(marker_type)
     })
 
     document.querySelector(".legend-clear-all").addEventListener("click", function() {legendSetAll(false)})
@@ -158,28 +158,28 @@ function renderLegend() {
     return true
 }
 
-function addLegendItem(type_enum) {
+function addLegendItem(marker_type, marker_color) {
     let legendDiv = document.querySelector('.legend')
     let markerTypeDiv = document.createElement('div')
     legendDiv.appendChild(markerTypeDiv)
 
-    addLegendItemCheckbox(type_enum, markerTypeDiv)
-    addLegendItemLabel(type_enum, markerTypeDiv)
+    addLegendItemCheckbox(marker_type, markerTypeDiv)
+    addLegendItemLabel(marker_type, markerTypeDiv)
 }
 
-function addLegendItemCheckbox(type_enum, markerTypeDiv) {
+function addLegendItemCheckbox(marker_type, markerTypeDiv) {
     var checkbox = document.createElement('input')
     checkbox.setAttribute("type", "checkbox")
-    checkbox.setAttribute("value", type_enum)
+    checkbox.setAttribute("value", marker_type)
     checkbox.checked = true;
     markerTypeDiv.appendChild(checkbox)
     checkbox.addEventListener('click', checkboxClickListener)
 }
 
-function addLegendItemLabel(type_enum, markerTypeDiv) {
+function addLegendItemLabel(marker_type, markerTypeDiv) {
     var label = document.createElement('label')
-    label.setAttribute("for", type_enum)
-    label.textContent  = titleCase(type_enum.split('.')[1])
+    label.setAttribute("for", marker_type)
+    label.textContent  = marker_type
     markerTypeDiv.appendChild(label)
 }
 function checkboxClickListener(e) {
@@ -234,10 +234,10 @@ function populateMarkerTypeDropdowns() {
         while (dropdown.options.length > 0) {
             dropdown.remove(dropdown.options.length-1)
         }
-        Array.from(markerTypes).forEach(type_enum => {
+        Array.from(markerTypes).forEach(marker_type => {
             var option = document.createElement('option')
-            option.setAttribute('value', type_enum)
-            option.textContent  = titleCase(type_enum.split('.')[1])
+            option.setAttribute('value', marker_type)
+            option.textContent = marker_type
             dropdown.appendChild(option)
         })
     })

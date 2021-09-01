@@ -22,7 +22,7 @@ from controller.charting import Charting
 # To run this from PyCharm's Python Console prompt (which lets you hit ^C):
 # > runfile('D:/Work/SubnauticaMap/app.py', wdir='D:/Work/SubnauticaMap')
 def init_map_data():
-    return [Marker(name='Lifepod', bearing=0, distance=0, depth=0,  marker_type=MarkerType.LIFEPOD)]
+    return [Marker(name='Lifepod', bearing=0, distance=0, depth=0,  marker_type_name="Lifepod", color="00FF00")]
 
 
 app = Flask(__name__)
@@ -49,6 +49,41 @@ app.secret_key = subnautical.GOOGLE_CLIENT_SECRET
 client = WebApplicationClient(subnautical.GOOGLE_CLIENT_ID)
 
 
+# Database upgrade performing two changes:
+#
+# 1. Converting marker types from constant enum to name/color properties
+# 2. Populate x,y coordinates in database so calculation is performed only once on marker write
+from utilities import geometry
+
+
+def populate_x_y_coordinates(user):
+    for mark in user.map_data:
+        if not hasattr(mark, 'x') or mark.x is None:
+            mark.x, mark.y = Charting.get_cartesean_coords(mark.distance, mark.depth, mark.bearing)
+            print(f"{mark.distance} bearing {mark.bearing} translated to ({mark.x}, {mark.y})")
+
+
+def upgrade_user_record(user):
+    for marker in user.map_data:
+        if hasattr(marker, 'marker_type') and marker.marker_type is not None:
+            print(f"* upgrading marker: {marker.name}")
+            marker.marker_type_name = marker.marker_type.name.capitalize()
+            marker.color = '555555'
+            delattr(marker, 'marker_type')
+
+    print('Saving user')
+
+def upgrade_all_users():
+    for user in PlayerData.objects:
+        print(f"Upgrading user: {user.name}")
+        upgrade_user_record(user)
+        populate_x_y_coordinates(user)
+        user.save(cascade=True)
+
+
+upgrade_all_users()
+
+
 @app.route('/')
 def hello_world():
     if current_user.is_authenticated and not current_user.is_anonymous:
@@ -68,9 +103,16 @@ def add_marker():
         distance = int(request.form['distance'])
         depth = int(request.form['depth'])
         marker_name = request.form['name']
-        marker_type = MarkerType.UNKNOWN  # int(request.form['marker_type'])
 
-        new_marker = Marker(bearing=heading, distance=distance, depth=depth, name=marker_name, marker_type=marker_type)
+        marker_type_name = request.form['marker_type']
+        try:
+            color = request.form['color']
+        except KeyError:
+            color = '555555'
+
+        x, y = Charting.get_cartesean_coords(distance, depth, heading)
+
+        new_marker = Marker(bearing=heading, distance=distance, depth=depth, name=marker_name, marker_type_name=marker_type_name, color=color, x=x, y=y)
         current_user.map_data.append(new_marker)
         current_user.save(cascade=True)
 

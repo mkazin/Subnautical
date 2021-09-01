@@ -7,7 +7,7 @@ from flask_login import UserMixin
 class PlayerData(Document, UserMixin):
 
     name = StringField()
-    map_data = ListField(EmbeddedDocumentField(Marker))
+    map_data = EmbeddedDocumentListField(Marker)
     google_id = StringField(db_field="_id", required=True, primary_key=True)
     email = StringField()
     email_verified = BooleanField()
@@ -16,8 +16,6 @@ class PlayerData(Document, UserMixin):
     meta = {
         'collection': 'users'
     }
-
-    # marker_colors = ListField(EmbeddedDocumentField(???))
 
     """ Methods required by flask_login.LoginManager """
     def get_id(self):

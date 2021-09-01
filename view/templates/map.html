@@ -34,7 +34,8 @@
                 <div class="controls">
                     <h4>Add new marker:</h4>
                     <form class="new-bearing-form" action="/marker" method="post">
-                        Name: <input type="text" class="new-bearing-name" name="name"/><br/>
+                        <div class="tooltip">Name<span class="tooltiptext">Caption for the marker</span></div>
+                        <input type="text" class="new-bearing-name" name="name"/><br/>
 
                         <div class="tooltip">Distance<span class="tooltiptext">Distance - the HUD distance shown to your lifepod (for all you math nerds: don't worry about your depth- that'll get calculated for you!)</span></div>
                         <input type="number" name="distance"/><br/>
@@ -45,8 +46,10 @@
                         <div class="tooltip">Depth<span class="tooltiptext">Your current depth meter. Use 0 if above sea level.</span></div>
                         <input type="number" name="depth"/><br/>
 
-                        <!-- MarkerType -->
-                        <!-- <input type="number" name="marker_type"/><br/> -->
+                        <div class="tooltip">Type<span class="tooltiptext">Type of marker. Create new types below.</span></div>
+                        <select name="marker_type" class="marker-type-dropdown">
+                        </select>
+                        <br/>
 
                         <input type="submit" value="Add New Bearing"/>
                     </form>
