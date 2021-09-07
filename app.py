@@ -14,7 +14,7 @@ from google.oauth2 import id_token
 import google.auth.transport.requests
 
 import subnautical
-from model.map_data import Marker, MarkerType
+from model.map_data import Marker
 from model.player_data import PlayerData
 from controller.charting import Charting
 
@@ -47,41 +47,6 @@ login_manager.login_view = 'login'
 login_manager.init_app(app)
 app.secret_key = subnautical.GOOGLE_CLIENT_SECRET
 client = WebApplicationClient(subnautical.GOOGLE_CLIENT_ID)
-
-
-# Database upgrade performing two changes:
-#
-# 1. Converting marker types from constant enum to name/color properties
-# 2. Populate x,y coordinates in database so calculation is performed only once on marker write
-from utilities import geometry
-
-
-def populate_x_y_coordinates(user):
-    for mark in user.map_data:
-        if not hasattr(mark, 'x') or mark.x is None:
-            mark.x, mark.y = Charting.get_cartesean_coords(mark.distance, mark.depth, mark.bearing)
-            print(f"{mark.distance} bearing {mark.bearing} translated to ({mark.x}, {mark.y})")
-
-
-def upgrade_user_record(user):
-    for marker in user.map_data:
-        if hasattr(marker, 'marker_type') and marker.marker_type is not None:
-            print(f"* upgrading marker: {marker.name}")
-            marker.marker_type_name = marker.marker_type.name.capitalize()
-            marker.color = '555555'
-            delattr(marker, 'marker_type')
-
-    print('Saving user')
-
-def upgrade_all_users():
-    for user in PlayerData.objects:
-        print(f"Upgrading user: {user.name}")
-        upgrade_user_record(user)
-        populate_x_y_coordinates(user)
-        user.save(cascade=True)
-
-
-upgrade_all_users()
 
 
 @app.route('/')
