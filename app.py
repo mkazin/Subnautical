@@ -17,6 +17,7 @@ import subnautical
 from model.map_data import Marker
 from model.player_data import PlayerData
 from controller.charting import Charting
+from controller.user_data import UserDataController
 
 
 # To run this from PyCharm's Python Console prompt (which lets you hit ^C):
@@ -77,9 +78,17 @@ def add_marker():
 
         x, y = Charting.get_cartesean_coords(distance, depth, heading)
 
-        new_marker = Marker(bearing=heading, distance=distance, depth=depth, name=marker_name, marker_type_name=marker_type_name, color=color, x=x, y=y)
-        current_user.map_data.append(new_marker)
-        current_user.save(cascade=True)
+        existing_marker = UserDataController.find_existing_marker_with_name(current_user, marker_name)
+        if existing_marker:
+            old_type_name = existing_marker.marker_type_name
+            UserDataController.update_marker_type(
+                current_user, old_type_name, marker_type_name, color)
+        else:
+            new_marker = Marker(
+                bearing=heading, distance=distance, depth=depth, x=x, y=y,
+                name=marker_name, marker_type_name=marker_type_name, color=color)
+            current_user.map_data.append(new_marker)
+            current_user.save(cascade=True)
 
     except KeyError:
         abort(400, description="Missing value - please make sure to fill in all fields")
@@ -203,4 +212,3 @@ with app.app_context():
 if __name__ == '__main__':
     print(f"Starting app on host={subnautical.app_host}, port={subnautical.app_port}")
     app.run(host=subnautical.app_host, port=subnautical.app_port, debug=False)
-
