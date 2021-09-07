@@ -20,11 +20,6 @@ class PlayerData(Document, UserMixin):
     """ Methods required by flask_login.LoginManager """
     def get_id(self):
         return unicode(self.google_id)
-
-    # self.is_authenticated = True
-    # self is_anonymous = False
-    # self is_active = True
-
     """ End flask_login.LoginManager requirements """
 
     def __repr__(self):

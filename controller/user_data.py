@@ -1,4 +1,22 @@
+from model.map_data import Marker
+from model.player_data import PlayerData
+
+
 class UserDataController:
+
+    @staticmethod
+    def create_new_player(player_id, name, email, profile_pic, email_verified):
+        player = PlayerData(
+            id=player_id,
+            name=name,
+            email=email,
+            profile_pic=profile_pic,
+            email_verified=email_verified,
+            map_data=UserDataController._init_map_data_(),
+        )
+        player.validate()
+        PlayerData.save_player(player)
+        return player
 
     @staticmethod
     def update_marker_type(current_user, old_type_name, new_type_name, color):
@@ -18,3 +36,8 @@ class UserDataController:
             if marker.name is marker_name:
                 return marker
         return None
+
+    @staticmethod
+    def _init_map_data_():
+        return [Marker(name='Lifepod', bearing=0, distance=0, depth=0, x=0, y=0,
+                       marker_type_name="Lifepod", color="00FF00")]

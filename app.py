@@ -22,8 +22,6 @@ from controller.user_data import UserDataController
 
 # To run this from PyCharm's Python Console prompt (which lets you hit ^C):
 # > runfile('D:/Work/SubnauticaMap/app.py', wdir='D:/Work/SubnauticaMap')
-def init_map_data():
-    return [Marker(name='Lifepod', bearing=0, distance=0, depth=0,  marker_type_name="Lifepod", color="00FF00")]
 
 
 app = Flask(__name__)
@@ -160,19 +158,16 @@ def callback():
         player = load_player_from_db(player_id)
         print(f"Callback: trying to load {player_id} resulted in: ", repr(player))
         login_user(player, force=True)
-    except DoesNotExist:
-        print(f"Callback: trying to load {player_id} threw DoesNotExist. Creating new document for: {id_info['name']}")
+    except (DoesNotExist, AttributeError) as e:
+        print(f"Callback: trying to load {player_id} threw exception. Creating new document for: {id_info['name']}", e)
 
-        player = PlayerData(
-            id=player_id,
+        player = UserDataController.create_new_player(
+            player_id=player_id,
             name=id_info['name'],
             email=id_info['email'],
             profile_pic=id_info['picture'],
             email_verified=id_info['email_verified'],
-            map_data=init_map_data(),
         )
-        player.validate()
-        PlayerData.save_player(player)
 
         login_user(player, force=True)
 
@@ -194,8 +189,13 @@ def logout():
 
 @login_manager.user_loader
 def load_player_from_db(player_id):
-    player = PlayerData.load_player(player_id)
-    print(f"load_player_from_db retrieved {player.name}")
+    player = None
+    try:
+        player = PlayerData.load_player(player_id)
+        print(f"load_player_from_db retrieved {player.name}")
+    except DoesNotExist:
+        pass
+
     return player
 
 

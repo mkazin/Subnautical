@@ -26,6 +26,18 @@ class UserDataControllerTestCase(unittest.TestCase):
         self.player.map_data = []
         self.player.save()
 
+    def test_create_new_player(self):
+        created_player = UserDataController.create_new_player(
+            player_id='player id',
+            name='name',
+            email='email',
+            profile_pic='picture',
+            email_verified=False,
+        )
+
+        self.assertIsNotNone(created_player)
+        self.assertEqual(1, len(created_player.map_data))
+
     def test_update_marker_type_when_marker_existed(self):
         old_type_name = 'Old Type Name'
         self._create_marker(bearing=100, distance=456, depth=123, x=5, y=5,
@@ -44,7 +56,6 @@ class UserDataControllerTestCase(unittest.TestCase):
         old_type_name = 'Old Type Name'
         self._create_marker(bearing=100, distance=456, depth=123, x=5, y=5,
                             name='First Marker', marker_type_name=old_type_name, color='Old Color')
-        old_type_name = 'Old Type Name'
         self._create_marker(bearing=100, distance=456, depth=123, x=5, y=5,
                             name='Second Marker', marker_type_name=old_type_name, color='Old Color')
 
@@ -86,8 +97,28 @@ class UserDataControllerTestCase(unittest.TestCase):
         self.player.map_data.append(new_marker)
         self.player.save(cascade=True)
 
-    # def test_find_existing_markers_of_type_name(self):
-    #     self.fail('Not implemented')
+    def test_find_existing_markers_of_type_name_happy_path(self):
+        marker_type_name_to_find = 'Old Type Name'
+        self._create_marker(bearing=100, distance=456, depth=123, x=5, y=5,
+                            name='First Marker', marker_type_name=marker_type_name_to_find, color='Color')
+        self._create_marker(bearing=100, distance=456, depth=123, x=5, y=5,
+                            name='Second Marker', marker_type_name='Different marker type', color='Color')
+        self._create_marker(bearing=100, distance=456, depth=123, x=5, y=5,
+                            name='Third Marker', marker_type_name=marker_type_name_to_find, color='Color')
+
+        found_markers = UserDataController.find_existing_markers_of_type_name(self.player, marker_type_name_to_find)
+
+        self.assertEqual(2, len(found_markers))
+        found_marker_names = set(list(map(lambda marker: marker.name, found_markers)))
+        self.assertSetEqual(set(['First Marker', 'Third Marker']), found_marker_names)
+
+    def test_find_existing_markers_of_type_name_when_missing(self):
+        marker_type_name_to_find = 'Type Name'
+        self._create_marker(bearing=100, distance=456, depth=123, x=5, y=5,
+                            name='Second Marker', marker_type_name='Different marker type', color='Color')
+
+        found_markers = UserDataController.find_existing_markers_of_type_name(self.player, marker_type_name_to_find)
+        self.assertEqual(0, len(found_markers))
 
     def test_find_existing_marker_with_name_happy_path(self):
         marker_name_to_find = 'Hello Marker'
@@ -107,19 +138,13 @@ class UserDataControllerTestCase(unittest.TestCase):
 
     @staticmethod
     def _create_player():
-        player = PlayerData(
-            id='test_id',
+        player = UserDataController.create_new_player(
+            player_id='test_id',
             name='Test Player',
             email='test@example.com',
             profile_pic='/static/test_user.svg',
             email_verified=True,
-            map_data=[],
         )
-        player.map_data = []
-        player.validate()
-        PlayerData.save_player(player)
-        player.save(cascade=True)
-
         UserDataControllerTestCase.player_singleton = player
 
     def _force_db_map_data_reload(self):
