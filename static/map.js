@@ -87,7 +87,7 @@ function renderYAxis() {
   }
 
 function isMarkerTypeEnabled(markerType) {
-    return markerTypeCheckbox = document.querySelector("input[value='" + markerType + "']").checked;
+    return markerTypeCheckbox = document.querySelector("input.marker-type-checkbox[value='" + markerType + "']").checked;
 }
 
 function doesMarkerPassDepthFilter(marker) {
@@ -155,6 +155,7 @@ function renderLegend() {
 
     document.querySelector(".legend-clear-all").addEventListener("click", function() {legendSetAll(false)})
     document.querySelector(".legend-check-all").addEventListener("click", function() {legendSetAll(true)})
+    document.querySelector(".marker-type-dropdown").addEventListener("change", function() {handleDropdownSelection()})
     return true
 }
 
@@ -172,8 +173,15 @@ function addLegendItemCheckbox(marker_type, markerTypeDiv) {
     checkbox.setAttribute("type", "checkbox")
     checkbox.setAttribute("value", marker_type)
     checkbox.checked = true;
+    checkbox.classList.add("marker-type-checkbox")
     markerTypeDiv.appendChild(checkbox)
     checkbox.addEventListener('click', checkboxClickListener)
+}
+
+function handleDropdownSelection() {
+    const markerTypeDropdown = document.querySelector('.marker-type-dropdown')
+    const markerTypeInput = document.querySelector('.marker-type-input')
+    markerTypeInput.value = markerTypeDropdown.value
 }
 
 function addLegendItemLabel(marker_type, markerTypeDiv) {

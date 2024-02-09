@@ -68,7 +68,7 @@ def add_marker():
         depth = int(request.form['depth'])
         marker_name = request.form['name']
 
-        marker_type_name = request.form['marker_type']
+        marker_type_name = request.form['new_type'] or request.form['marker_type']
         try:
             color = request.form['color']
         except KeyError:

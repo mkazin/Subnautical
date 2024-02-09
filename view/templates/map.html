@@ -20,7 +20,6 @@
                     <h4>Show/Hide Marker Types:</h4>
                     <input type="button" class="legend-clear-all" value="Hide All"/>
                     <input type="button" class="legend-check-all" value="Show All"/>
-                    <input type="button" class="legend-add-type" value="New Type"/>
                 </div>
                 <div class="depth-filter">
                     Depth filter:
@@ -47,6 +46,8 @@
                         <input type="number" name="depth"/><br/>
 
                         <div class="tooltip">Type<span class="tooltiptext">Type of marker. Create new types below.</span></div>
+                        <input type="text" name="new_type" class="marker-type-input" placeholder="New Marker Type"></input>
+
                         <select name="marker_type" class="marker-type-dropdown">
                         </select>
                         <br/>
